@@ -106,14 +106,15 @@
             width: var(--card-w);
             height: var(--card-h);
             overflow: hidden;
-            border-radius: 2px;
+            border-radius: 4px;
             background: #e3e3e3;
             transform: scale(0.3);
             opacity: 0;
-            animation: itemIn 1.4s cubic-bezier(0.18, 0.71, 0.11, 1) forwards;
+            animation: itemIn 1.2s cubic-bezier(0.18, 0.71, 0.11, 1) forwards;
         }
 
-        /* Keep a consistent layout (no stagger gaps). */
+        /* Waterfall stagger — needs extra row copies in JS so wrap never shows voids. */
+        .gallery-item:nth-child(even) { margin-top: 60%; }
 
         .gallery-item img {
             width: 100%;
@@ -182,9 +183,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const BASE_IMAGES = [
         'bg/bg1-w.webp','bg/bg5-w.webp','bg/bg7-w.webp','bg/bg10-w.webp','bg/bg11-w.webp','bg/bg12-w.webp',
-        'bg/bg14-b.webp','bg/bg15-w.webp','bg/bg16-w.webp',
-        'bg/bg2-w.png','bg/bg6-b.png','bg/bg8-w.png','bg/bg9-w.png','bg/bg13-b.png','bg/bg17-w.png','bg/bg18-w.png','bg/bg19-b.png'
+        'bg/bg14-b.webp','bg/bg15-w.webp','bg/bg16-w.webp'
     ];
+
+    function shuffleInPlace(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+    }
+    shuffleInPlace(BASE_IMAGES);
 
     const stage = document.getElementById('galleryStage');
     const surface = document.getElementById('gallerySurface');
@@ -200,18 +209,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildGalleryImages() {
         const isMobile = window.matchMedia('(max-width: 900px)').matches;
         const rootStyle = getComputedStyle(document.documentElement);
-        const cardW = parseFloat(rootStyle.getPropertyValue('--card-w')) || (isMobile ? 158 : 222);
+        const cardW = parseFloat(rootStyle.getPropertyValue('--card-w')) || (isMobile ? 150 : 210);
         const cardH = parseFloat(rootStyle.getPropertyValue('--card-h')) || (isMobile ? 220 : 320);
         const gap = isMobile ? 36 : 56;
         const pad = isMobile ? 16 : 24;
 
-        // Ensure a single pane (one body) is larger than the viewport so the 2x2 tiling never reveals whitespace.
+        // Match index.html SPA gallery: one body must exceed the viewport; extra rows for staggered tiles.
         const cols = Math.max(6, Math.ceil((window.innerWidth + pad * 2) / (cardW + gap)) + 2);
-        const rows = Math.max(8, Math.ceil((window.innerHeight + pad * 2) / (cardH + gap)) + 2);
+        const rows = Math.max(10, Math.ceil((window.innerHeight + pad * 2) / (cardH + gap)) + 8);
         document.documentElement.style.setProperty('--gallery-cols', String(cols));
 
         const targetCount = Math.max(cols * rows, BASE_IMAGES.length);
-        const reps = Math.max(4, Math.ceil(targetCount / BASE_IMAGES.length) + 1);
+        const reps = Math.max(6, Math.ceil(targetCount / BASE_IMAGES.length) + 2);
         galleryImages = [];
         for (let r = 0; r < reps; r++) galleryImages = galleryImages.concat(BASE_IMAGES);
     }
@@ -355,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     homeLogo.addEventListener('click', (e) => {
         e.preventDefault();
         const targetUrl = homeLogo.getAttribute('href');
+        try { sessionStorage.setItem('skipIntroOnce', '1'); } catch (_) {}
         const prefersReducedMotion = window.matchMedia &&
             window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReducedMotion) {
