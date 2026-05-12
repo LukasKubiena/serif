@@ -17,7 +17,9 @@
     :root {
       --padding-y: clamp(14px, 2vh, 28px);
       --padding-x: clamp(14px, 2vw, 28px);
-      --ui: #ffffff;
+      --ink: #111111;
+      --paper: #ffffff;
+      --muted: rgba(17, 17, 17, 0.55);
       --font-size: 13.5px;
       --line-height: 1.37;
     }
@@ -36,8 +38,8 @@
       font-weight: 300;
       line-height: var(--line-height);
       letter-spacing: -0.02em;
-      color: var(--ui);
-      background: #111;
+      color: var(--ink);
+      background: var(--paper);
     }
 
     body.is-leaving {
@@ -125,13 +127,14 @@
       font-size: clamp(17px, 2.1vw, 22px);
       font-weight: 300;
       letter-spacing: -0.03em;
+      color: var(--ink);
     }
 
     label {
       display: block;
       margin-bottom: 0.35em;
       font-size: 0.92em;
-      opacity: 0.88;
+      color: var(--muted);
     }
 
     .field { margin-bottom: 1.1em; }
@@ -142,9 +145,9 @@
       padding: 0.55em 0.65em;
       font: inherit;
       letter-spacing: inherit;
-      color: #111;
-      background: #f5f5f5;
-      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--ink);
+      background: #f6f6f6;
+      border: 1px solid rgba(17, 17, 17, 0.12);
       border-radius: 2px;
     }
 
@@ -154,7 +157,7 @@
     }
 
     input:focus, textarea:focus {
-      outline: 1px solid rgba(255,255,255,0.45);
+      outline: 1px solid rgba(17, 17, 17, 0.35);
       outline-offset: 2px;
     }
 
@@ -163,8 +166,8 @@
       letter-spacing: inherit;
       padding: 0.55em 1.2em;
       margin-top: 0.25em;
-      color: #111;
-      background: #fff;
+      color: var(--paper);
+      background: var(--ink);
       border: none;
       border-radius: 2px;
       cursor: pointer;
@@ -180,15 +183,19 @@
       transition: opacity 0.3s ease;
     }
 
-    .status.visible { opacity: 0.85; }
+    .status.visible { opacity: 0.85; color: var(--muted); }
 
     .footnote {
       margin-top: 1.5em;
       font-size: 0.88em;
-      opacity: 0.72;
+      color: var(--muted);
     }
 
-    .footnote a { color: inherit; }
+    .footnote a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
   </style>
 </head>
 <body>

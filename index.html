@@ -66,24 +66,24 @@
         body.is-entering .home-shell > .col-a,
         body.is-entering .home-shell > .col-b,
         body.is-entering .home-shell > .right-edge,
-        body.is-entering .home-shell > .col-c,
-        body.is-entering .home-shell > .col-d {
+        body.is-entering .home-shell > .home-row-bottom .col-c,
+        body.is-entering .home-shell > .home-row-bottom .col-d {
             opacity: 0; transform: translateY(5px); filter: blur(0.25px); will-change: opacity, transform, filter;
         }
 
         body.has-entered .home-shell > .col-a,
         body.has-entered .home-shell > .col-b,
         body.has-entered .home-shell > .right-edge,
-        body.has-entered .home-shell > .col-c,
-        body.has-entered .home-shell > .col-d {
+        body.has-entered .home-shell > .home-row-bottom .col-c,
+        body.has-entered .home-shell > .home-row-bottom .col-d {
             opacity: 1; transform: translateY(0); filter: blur(0);
             transition: opacity 0.92s cubic-bezier(0.22, 1, 0.36, 1), transform 0.92s cubic-bezier(0.22, 1, 0.36, 1), filter 0.92s cubic-bezier(0.22, 1, 0.36, 1);
         }
         body.has-entered .home-shell > .col-a { transition-delay: 0.05s; }
         body.has-entered .home-shell > .col-b { transition-delay: 0.11s; }
         body.has-entered .home-shell > .right-edge { transition-delay: 0.14s; }
-        body.has-entered .home-shell > .col-c { transition-delay: 0.18s; }
-        body.has-entered .home-shell > .col-d { transition-delay: 0.24s; }
+        body.has-entered .home-shell > .home-row-bottom .col-c { transition-delay: 0.18s; }
+        body.has-entered .home-shell > .home-row-bottom .col-d { transition-delay: 0.24s; }
 
         body.is-leaving {
             opacity: 0;
@@ -236,8 +236,31 @@
 
         .col-a { grid-column: 1; grid-row: 1; width: 100%; }
         .col-b { grid-column: 2; grid-row: 1; width: 100%; }
-        .col-c { grid-column: 1; grid-row: 3; align-self: start; width: 100%; }
-        .col-d { grid-column: 2; grid-row: 3; align-self: start; width: 100%; }
+
+        /* One shared row height so the right column can pin links to the bottom line of the left column. */
+        .home-row-bottom {
+            grid-column: 1 / 3;
+            grid-row: 3;
+            display: grid;
+            grid-template-columns: var(--col-width) var(--col-width);
+            column-gap: var(--column-gutter);
+            align-items: stretch;
+            width: 100%;
+        }
+        .home-row-bottom .col-c,
+        .home-row-bottom .col-d {
+            width: 100%;
+            min-width: 0;
+        }
+        .home-row-bottom .col-d {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+        }
+        .home-row-bottom .col-d .inline-links {
+            margin-top: 0;
+        }
 
         .right-edge {
             grid-column: 3; grid-row: 1 / -1; justify-self: end; align-self: stretch; display: flex; flex-direction: column;
@@ -363,7 +386,12 @@
                 column-gap: var(--column-gutter-mobile); row-gap: clamp(14px, 3vh, 26px); padding-bottom: calc(var(--padding-y) + 4px);
             }
             .col-a { grid-column: 1; grid-row: 1; width: 100%; } .col-b { grid-column: 2; grid-row: 1; width: 100%; }
-            .col-c { grid-column: 1; grid-row: 3; width: 100%; align-self: start; } .col-d { grid-column: 2; grid-row: 3; width: 100%; align-self: start; }
+            .home-row-bottom {
+                grid-column: 1 / 3;
+                grid-row: 3;
+                grid-template-columns: 1fr 1fr;
+                column-gap: var(--column-gutter-mobile);
+            }
             .right-edge { grid-column: 1 / -1; grid-row: 4; flex-direction: row; min-height: 0; align-self: end; justify-self: stretch; justify-content: flex-start; align-items: center; gap: 10px; width: 100%; }
             .right-edge .vienna { order: 1; margin: 0; padding: 0; margin-right: auto; text-align: left; }
             .right-edge a.quad-area { order: 2; }
@@ -375,9 +403,9 @@
             .hey.animate .comma { animation: none !important; }
             .gallery-stage.active .gallery-item { animation: none !important; opacity: 1; transform: scale(1); }
             body.is-entering .home-shell > .col-a, body.is-entering .home-shell > .col-b, body.is-entering .home-shell > .right-edge,
-            body.is-entering .home-shell > .col-c, body.is-entering .home-shell > .col-d, body.has-entered .home-shell > .col-a,
-            body.has-entered .home-shell > .col-b, body.has-entered .home-shell > .right-edge, body.has-entered .home-shell > .col-c,
-            body.has-entered .home-shell > .col-d {
+            body.is-entering .home-shell > .home-row-bottom .col-c, body.is-entering .home-shell > .home-row-bottom .col-d, body.has-entered .home-shell > .col-a,
+            body.has-entered .home-shell > .col-b, body.has-entered .home-shell > .right-edge, body.has-entered .home-shell > .home-row-bottom .col-c,
+            body.has-entered .home-shell > .home-row-bottom .col-d {
                 opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important;
             }
             .intro-loader { display: none !important; }
@@ -420,17 +448,19 @@
             </a>
             <div class="vienna">Europe 2026</div>
         </div>
-        <div class="col-c">
-            <p>
-                We share a common background in neuroscience, design, and technology. We care deeply about solving complex problems affecting many people and hope to do so by creating beautiful and meaningful things along the way. Serif is deeply rooted in the creative scenes of Vienna and Amsterdam.
-            </p>
-        </div>
-        <div class="col-d">
-            <p>Beyond our core team, we can bring together interdisciplinary talent and resources from this network to match the specific needs of each project. Feel free to reach out if we care about the same things!</p>
-            <div class="inline-links">
-                <a href="gallery.html">work</a>
-                <a href="contact.html">contact us</a>
-                <a href="./writing/index.html">writing</a>
+        <div class="home-row-bottom">
+            <div class="col-c">
+                <p>
+                    We share a common background in neuroscience, design, and technology. We care deeply about solving complex problems affecting many people and hope to do so by creating beautiful and meaningful things along the way. Serif is deeply rooted in the creative scenes of Vienna and Amsterdam.
+                </p>
+            </div>
+            <div class="col-d">
+                <p>Beyond our core team, we can bring together interdisciplinary talent and resources from this network to match the specific needs of each project. Feel free to reach out if we care about the same things!</p>
+                <div class="inline-links">
+                    <a href="gallery.html">work</a>
+                    <a href="contact.html">contact us</a>
+                    <a href="./writing/index.html">writing</a>
+                </div>
             </div>
         </div>
     </main>
@@ -453,9 +483,9 @@
     <script>
 (function () {
     let BG_IMAGES = [
-        'bg/bg1-w.webp','bg/bg5-w.webp','bg/bg7-w.webp','bg/bg8-w.webp',
-        'bg/bg10-w.webp','bg/bg11-w.webp','bg/bg12-w.webp','bg/bg13-b.webp',
-        'bg/bg14-b.webp','bg/bg15-w.webp','bg/bg16-w.webp','bg/bg17-b.webp'
+        'bg/bg1-w.webp','bg/bg5-w.webp','bg/bg7-w.webp','bg/bg10-w.webp','bg/bg11-w.webp','bg/bg12-w.webp',
+        'bg/bg14-b.webp','bg/bg15-w.webp','bg/bg16-w.webp',
+        'bg/bg2-w.png','bg/bg6-b.png','bg/bg8-w.png','bg/bg9-w.png','bg/bg13-b.png','bg/bg17-w.png','bg/bg18-w.png','bg/bg19-b.png'
     ];
     
     // Built after we know BG_IMAGES + columns
@@ -495,6 +525,9 @@
     const LOADER_MAX_WAIT_MS = 5000;
     const LOADER_PRELOAD_AHEAD = 2;
     const LOADER_MIN_AFTER_INTRO_MS = 800;
+
+    /** Clicks that dismiss the intro can hit-test the home shell underneath; block gallery open briefly. */
+    let suppressGalleryFromIntroUntil = 0;
 
     const INTRO_TEXT_REST = " we are Serif, a creative agency and consultancy based in Vienna & Amsterdam.";
     const INTRO_HEY_SPEED_MS = 150;
@@ -578,6 +611,7 @@
             };
             const onSkip = (e) => {
                 if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) {} }
+                suppressGalleryFromIntroUntil = performance.now() + 750;
                 introTypingToken++;
                 finish();
             };
@@ -1221,6 +1255,11 @@
 
     document.addEventListener('click', e => {
         if (inGallery || transitioning) return;
+        if (performance.now() < suppressGalleryFromIntroUntil) {
+            e.preventDefault();
+            return;
+        }
+        if (e.target.closest('.intro-loader')) return;
         const link = e.target.closest('a');
         if (link && (link.getAttribute('href') === './writing/index.html' || link.getAttribute('href') === 'contact.html')) {
             e.preventDefault();
